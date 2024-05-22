@@ -1,0 +1,46 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <link rel="stylesheet" href="{% static 'css/index.css' %}">
+    <style>
+        .home {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        background-color: aliceblue;
+        }
+
+        .box {
+        background-color: #9b6e6e;
+        width: 250px;
+        height: 350px;
+        border-radius: 10px;
+        border: 5px;
+        padding: 20px;
+        /* margin: 10px; */
+        text-align: center;
+  }
+    </style>
+</head>
+<body>
+    {% block content %}
+    <div class="home">
+        <div class="box">
+            <h1>
+                Welcome !!!
+            </h1>
+            <h2><a href="{% url 'register' %}">Register</a></h2>
+            
+        <h2><a href="{% url 'user_login' %}">Login</a></h2>
+        </div>
+    
+    </div>
+    {% endblock content %}
+</body>
+</html>

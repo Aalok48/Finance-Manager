@@ -1,9 +1,9 @@
 from django import forms 
-from .models import Income, Expense
+from .models import Income, Expense, ToPay
 
 class ExpenseForm(forms.ModelForm):
-    category=forms.ChoiceField(
-        choices=[
+    category = forms.ChoiceField(
+        choices = [
             ('Food','Food'),
             ('Transportion','Transportation'),
             ('Utilities','Utilities'),
@@ -13,12 +13,12 @@ class ExpenseForm(forms.ModelForm):
         ]
     )
     class Meta:
-        model=Expense
-        fields=['amount', 'category', 'description']
+        model = Expense
+        fields = ['amount', 'category', 'description']
 
 class IncomeForm(forms.ModelForm):
-    source=forms.ChoiceField(
-        choices=[
+    source = forms.ChoiceField(
+        choices = [
             ('Salary', 'Salary'),
             ('Interest income', 'Interest income'),
             ('Rent', 'Rent'),
@@ -29,5 +29,10 @@ class IncomeForm(forms.ModelForm):
         ]
     )
     class Meta:
-        model=Income
-        fields=['amount', 'source', 'description']
+        model = Income
+        fields = ['amount', 'source', 'description']
+
+class TopayForm(forms.ModelForm):
+    class Meta:
+        model = ToPay
+        fields = ['amount', 'date_to_pay', 'reason']

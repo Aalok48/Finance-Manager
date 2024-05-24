@@ -7,42 +7,43 @@
     <link rel="icon" type="png" href="D:\Finance-Manager\FinanceManager\income_expense\static\icon.png">
 </head>
 <body>
-  {% load custom_filters %}
-  {{user.username}}
-  <hr>
-    <!-- Add Expense button -->
-<a href="#addExpenseForm" class="btn btn-primary" data-toggle="collapse">Add Expense</a>
-
-<!-- Expense form -->
-<div id="addExpenseForm" class="collapse">
-    <form action="{% url 'add_expense' %}" method="post">
-        {% csrf_token %}
-        {{ expense_form.as_p }}
-        <button type="submit" class="btn btn-primary">Submit</button>
-    </form>
+    {% load custom_filters %}
+    {{user.username}}
     <hr>
-    <!-- Add Income button -->
-<a href="#addIncomeForm" class="btn btn-primary" data-toggle="collapse">Add Income</a>
+    <!-- Add Expense button -->
+    <a href="#addExpenseForm" class="btn btn-primary" data-toggle="collapse">Add Expense</a>
 
-<!-- Expense form -->
-<div id="addIncomeForm" class="collapse">
-  <form action="{% url 'add_income' %}" method="post">
-    {% csrf_token %}
-    {{ income_form.as_p }}
-    <button type="submit" class="btn btn-primary">Submit</button>
-  </form>
-</div>
-<hr>
-<!-- Expenses -->
-<h2>Expenses</h2>
-<ul>
-  {% for expense in expenses %}
-  <li>{{ expense.amount }} - {{ expense.description }} - {{ expense.date }} - {{ expense.category }}</li>
-  {% endfor %}
-</ul>
+    <!-- Expense form -->
+    <div id="addExpenseForm" class="collapse">
+        <form action="{% url 'add_expense' %}" method="post">
+            {% csrf_token %}
+            {{ expense_form.as_p }}
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+        <hr>
+        <!-- Add Income button -->
+    <a href="#addIncomeForm" class="btn btn-primary" data-toggle="collapse">Add Income</a>
 
-<p>Total Expenses: {{ expenses|calculate_total_expenses }}</p>
-<br>
+    <!-- Expense form -->
+
+    <div id="addIncomeForm" class="collapse">
+        <form action="{% url 'add_income' %}" method="post">
+            {% csrf_token %}
+            {{ income_form.as_p }}
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+    <hr>
+    <!-- Expenses -->
+    <h2>Expenses</h2>
+        <ul>
+            {% for expense in expenses %}
+            <li>{{ expense.amount }} - {{ expense.description }} - {{ expense.date }} - {{ expense.category }}</li>
+            {% endfor %}
+        </ul>
+
+    <p>Total Expenses: {{ expenses|calculate_total_expenses }}</p>
+    <br>
 <!-- Incomes -->
 <h2>Incomes</h2>
 <ul>
@@ -52,16 +53,62 @@
 </ul>
 <p>Total Income: {{ incomes|calculate_total_incomes }}</p>
 <br>
-<img src="data:image/png;base64, {{ chart }}" alt="hello there">
+<h2>Date Picker(for expense)</h2>
+<form method="post">
+    {% csrf_token %}
+<label for="datepicker1">From:</label>
+<input type="date" id="datepicker1" name="datepicker1">
+<label for="datepicker2">To:</label>
+<input type="date" id="datepicker2" name="datepicker2">
+<br><br>
+<button type="submit">Refresh graph</button>
+</form>
+<p><b>Expense graph</b></p>
+<img src="data:image/png;base64, {{ expense_chart }}" alt="hello there">
 
 <br>
-<form action="/logout">
-  {% csrf_token %}
-  <h2>Log Out</h2>
-  <br>
-  <button>Log Out</button>
-</form>
+<h2>Date Picker(for Income)</h2>
+<form method="post">
+    {% csrf_token %}
+<label for="datepicker3">From:</label>
+<input type="date" id="datepicker3" name="datepicker3">
+<label for="datepicker4">To:</label>
+<input type="date" id="datepicker4" name="datepicker4">
 <br>
+<p><b>Income graph</b></p>
+<br>
+<img src="data:image/png;base64, {{ income_chart }}" alt="hello there">
+
+<br>
+<p><b>Remaining payment to make</b></p>
+<a href="#addpaymentForm" class="btn btn-primary" data-bs-toggle="collapse">Add Payment</a>
+
+<!-- Add payment form -->
+<div id="addpaymentForm" class="collapse">
+    <form action="{% url 'add_payment' %}" method="post">
+        {% csrf_token %}
+        {{ topay_form.as_p }}
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>
+<hr>
+
+<br>
+<!-- Add payment -->
+<h2>Payment to made</h2>
+<ul>
+    {% for j in payment %}
+    <li>{{ j.amount }} - {{ j.reason }} - {{ j.date_to_pay }} </li>
+    {% endfor %}
+</ul>
+
+<br>
+    <form action="/logout">
+        {% csrf_token %}
+        <h2>Log Out</h2><br>
+        <button>Log Out</button>
+    </form>
+
 <br>
 <br>
 <br>

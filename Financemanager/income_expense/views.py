@@ -1,6 +1,6 @@
 from django.shortcuts import render, HttpResponse, redirect
-from .forms import ExpenseForm, IncomeForm
-from .models import Expense, Income
+from .forms import ExpenseForm, IncomeForm, TopayForm
+from .models import Expense, Income, ToPay
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login ,logout
@@ -45,20 +45,33 @@ def dashboard(request):
     user=request.user
     expenses = Expense.objects.filter(user=user)
     incomes = Income.objects.filter(user=user)
-    expense_date_list=[]
-    amount_list=[]
+    payment = ToPay.objects.filter(user=user)
+    expense_date_list = []
+    income_date_list = []
+
+    income_amount_list = []
+    expense_amount_list = []
     for expense in expenses:
         expense_date=expense.date.strftime("%Y-%m-%d")
         amount=expense.amount
         expense_date_list.append(expense_date)
-        amount_list.append(amount)
+        expense_amount_list.append(amount)
+
+    for income in incomes:
+        income_date=income.date.strftime("%Y-%m-%d")
+        amount=income.amount
+        income_date_list.append(income_date)
+        income_amount_list.append(amount)
     
-    chart=get_plot(expense_date_list, amount_list)
+    expense_chart = get_plot(expense_date_list, expense_amount_list)
+    income_chart = get_plot(income_date_list, income_amount_list)
     context = {
-        'expenses': expenses,
-        'incomes': incomes,
-        'user': user,
-        'chart': chart,
+        'expenses' : expenses,
+        'incomes' : incomes,
+        'payment' : payment,
+        'user' : user,
+        'expense_chart' : expense_chart,
+        'income_chart' : income_chart,
         }
     return render(request, 'dashboard.html', context)
 
@@ -82,7 +95,7 @@ def add_expense(request):
 
 @login_required
 def add_income(request):
-    user=request.user
+    user = request.user
     if request.method == 'POST':
         income_form = IncomeForm(request.POST)
         if income_form.is_valid():
@@ -98,6 +111,26 @@ def add_income(request):
     }
     return render(request, 'dashboard.html', context)
 
+@login_required
+def add_payment(request):
+    user = request.user
+    print("hello1")
+    if request.method == 'POST':
+        topay_form = TopayForm(request.POST)
+        if topay_form.is_valid():
+            topay = topay_form.save(commit=False)
+            topay.user = request.user
+            print("hello2")
+            topay.save()
+            return redirect('dashboard')
+    else:
+        topay_form = TopayForm()
+    
+    print("hello3")
+    context = {
+        'topay_form' : topay_form
+    }
+    return render(request, 'dashboard.html', context)
 
 @login_required
 def logout_page(request):
